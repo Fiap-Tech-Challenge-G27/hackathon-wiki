@@ -1,0 +1,1310 @@
+{
+	"info": {
+		"_postman_id": "b6434a03-45df-4fbf-ad9e-ce07fbad9c19",
+		"name": "FIAP Hackathon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33698690"
+	},
+	"item": [
+		{
+			"name": "Pacientes",
+			"item": [
+				{
+					"name": "newPatient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Gera dados aleatórios válidos\r",
+									"var randomPatientEmail = `test${Math.floor(Math.random() * 80000 + 10000)}@gmail.com`;\r",
+									"var randomPatientCpf = Math.floor(Math.random() * 80000 + 10000);\r",
+									"var randomPatientName = `${Math.random().toString(36).substring(7)}`;\r",
+									"var randomPatientPhone = `+55${Math.floor(Math.random() * 900000000 + 100000000)}`;\r",
+									"var randomPatientStreet = `Street ${Math.random().toString(36).substring(7)}`;\r",
+									"var randomPatientCity = `City ${Math.random().toString(36).substring(7)}`;\r",
+									"var randomPatientState = `State ${Math.random().toString(36).substring(2, 4).toUpperCase()}`;\r",
+									"var randomPatientZip = `${Math.floor(Math.random() * 90000000 + 10000000)}`;\r",
+									"\r",
+									"pm.collectionVariables.set(\"randomPatientEmail\", randomPatientEmail);\r",
+									"pm.collectionVariables.set(\"randomPatientCpf\", randomPatientCpf);\r",
+									"pm.collectionVariables.set(\"randomPatientName\", randomPatientName);\r",
+									"pm.collectionVariables.set(\"randomPatientPhone\", randomPatientPhone);\r",
+									"pm.collectionVariables.set(\"randomPatientStreet\", randomPatientStreet);\r",
+									"pm.collectionVariables.set(\"randomPatientCity\", randomPatientCity);\r",
+									"pm.collectionVariables.set(\"randomPatientState\", randomPatientState);\r",
+									"pm.collectionVariables.set(\"randomPatientZip\", randomPatientZip);\r",
+									"\r",
+									"// Define o corpo da requisição com os dados gerados\r",
+									"pm.request.body.raw = JSON.stringify({\r",
+									"    \"name\": randomPatientName,\r",
+									"    \"phone\": randomPatientPhone,\r",
+									"    \"email\": randomPatientEmail,\r",
+									"    \"cpf\": randomPatientCpf.toString(),\r",
+									"    \"password\": \"12345678\",\r",
+									"    \"specialties\": [\"string\"],\r",
+									"    \"address\": {\r",
+									"        \"street\": randomPatientStreet,\r",
+									"        \"number\": 1,\r",
+									"        \"city\": randomPatientCity,\r",
+									"        \"state\": randomPatientState,\r",
+									"        \"zip\": randomPatientZip\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"7lfnna\",\n    \"phone\": \"+55910229280\",\n    \"email\": \"test79887@gmail.com\",\n    \"cpf\": \"54407\",\n    \"password\": \"12345678\",\n    \"address\": {\n        \"street\": \"Street wof56\",\n        \"number\": 1,\n        \"city\": \"City jw639h\",\n        \"state\": \"State FH\",\n        \"zip\": \"46459783\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/patients",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPatients",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/patients",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePatientByCpf",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{randomPatientCpf}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Usa os dados gerados na request de newDoctor\r",
+									"var randomCpf = pm.collectionVariables.get(\"randomPatientCpf\");\r",
+									"\r",
+									"pm.request.body.raw = JSON.stringify({\r",
+									"    \"cpf\": randomCpf,\r",
+									"    \"password\": \"12345678\"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has access token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"access_token\");\r",
+									"    pm.collectionVariables.set(\"authPatientsToken\", jsonData.access_token);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"54407\",\n  \"password\": \"$2b$10$gEO8OuzdQjUh7f5XKHR3ZONIW22JK5KAylu8s/tTGUEqJWhNPMDEK\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/patients/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "uploadFile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "mocks/lorem-ipsum.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/patients/files/upload/12345678900",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"files",
+								"upload",
+								"12345678900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFiles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/files/{{cpf}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"files",
+								"{{cpf}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/files/{{cpf}}/{{filename}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"files",
+								"{{cpf}}",
+								"{{filename}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllFiles",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/files/delete-all",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"files",
+								"delete-all"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{authPatientsToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Medicos",
+			"item": [
+				{
+					"name": "newDoctor",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Gera dados aleatórios válidos\r",
+									"var randomEmail = `test${Math.floor(Math.random() * 80000 + 10000)}@gmail.com`;\r",
+									"var randomCrm = Math.floor(Math.random() * 80000 + 10000);\r",
+									"var randomName = `Doctor ${Math.random().toString(36).substring(7)}`;\r",
+									"var randomPhone = `+55${Math.floor(Math.random() * 900000000 + 100000000)}`;\r",
+									"var randomStreet = `Street ${Math.random().toString(36).substring(7)}`;\r",
+									"var randomCity = `City ${Math.random().toString(36).substring(7)}`;\r",
+									"var randomState = `State ${Math.random().toString(36).substring(2, 4).toUpperCase()}`;\r",
+									"var randomZip = `${Math.floor(Math.random() * 90000000 + 10000000)}`;\r",
+									"\r",
+									"pm.collectionVariables.set(\"randomEmail\", randomEmail);\r",
+									"pm.collectionVariables.set(\"randomCrm\", randomCrm);\r",
+									"pm.collectionVariables.set(\"randomName\", randomName);\r",
+									"pm.collectionVariables.set(\"randomPhone\", randomPhone);\r",
+									"pm.collectionVariables.set(\"randomStreet\", randomStreet);\r",
+									"pm.collectionVariables.set(\"randomCity\", randomCity);\r",
+									"pm.collectionVariables.set(\"randomState\", randomState);\r",
+									"pm.collectionVariables.set(\"randomZip\", randomZip);\r",
+									"\r",
+									"// Define o corpo da requisição com os dados gerados\r",
+									"pm.request.body.raw = JSON.stringify({\r",
+									"    \"name\": randomName,\r",
+									"    \"phone\": randomPhone,\r",
+									"    \"email\": randomEmail,\r",
+									"    \"crm\": randomCrm.toString(),\r",
+									"    \"password\": \"12345678\",\r",
+									"    \"specialties\": [\"string\"],\r",
+									"    \"address\": {\r",
+									"        \"street\": randomStreet,\r",
+									"        \"number\": 1,\r",
+									"        \"city\": randomCity,\r",
+									"        \"state\": randomState,\r",
+									"        \"zip\": randomZip\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gera dados aleatórios válidos\r",
+									"var randomEmail = pm.collectionVariables.get(\"randomEmail\");\r",
+									"var randomCrm = pm.collectionVariables.get(\"randomCrm\");\r",
+									"var randomName = pm.collectionVariables.get(\"randomName\");\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has valid structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"   pm.collectionVariables.set(\"doctorId\", jsonData._id);\r",
+									"    pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"name\", randomName);\r",
+									"    pm.expect(jsonData).to.have.property(\"email\", randomEmail);\r",
+									"    pm.expect(jsonData).to.have.property(\"crm\", randomCrm.toString());\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"test{@gmail.com\",\n  \"crm\": \"{{$randomInt 10000 90000}}\",\n  \"password\": \"12345678\",\n  \"specialties\": [\"string\"],\n  \"address\": {\n    \"street\": \"string\",\n    \"number\": 1,\n    \"city\": \"string\",\n    \"state\": \"string\",\n    \"zip\": \"string\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/doctors",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has access token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"access_token\");\r",
+									"    pm.collectionVariables.set(\"authDoctorsToken\", jsonData.access_token);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Usa os dados gerados na request de newDoctor\r",
+									"var randomEmail = pm.collectionVariables.get(\"randomEmail\");\r",
+									"\r",
+									"pm.request.body.raw = JSON.stringify({\r",
+									"    \"username\": randomEmail,\r",
+									"    \"password\": \"12345678\"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test37642@gmail.com\",\n  \"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/doctors/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDoctors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/doctors",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAppointmentsOfDoctorAuthenticated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var accessToken = pm.collectionVariables.get(\"authDoctorsToken\");\r",
+									"\r",
+									"pm.request.headers.add({\r",
+									"    key: \"Authorization\",\r",
+									"    value: `Bearer ${accessToken}`\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth.response.body.access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/doctors/appointments/doctor",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors",
+								"appointments",
+								"doctor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "newAppointment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has valid structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"type\", \"remote\");\r",
+									"    pm.expect(jsonData).to.have.property(\"status\", \"available\");\r",
+									"    pm.expect(jsonData).to.have.property(\"startTime\", startTime);\r",
+									"    pm.expect(jsonData).to.have.property(\"endTime\", endTime);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Gera tempos de início e término válidos\r",
+									"var startTime = new Date().toISOString();\r",
+									"var endTime = new Date(new Date().getTime() + 30*60000).toISOString(); // 30 minutos depois\r",
+									"\r",
+									"pm.collectionVariables.set(\"startTime\", startTime);\r",
+									"pm.collectionVariables.set(\"endTime\", endTime);\r",
+									"\r",
+									"var accessToken = pm.collectionVariables.get(\"authDoctorsToken\");\r",
+									"\r",
+									"pm.request.headers.add({\r",
+									"    key: \"Authorization\",\r",
+									"    value: `Bearer ${accessToken}`\r",
+									"});\r",
+									"\r",
+									"pm.request.body.raw = JSON.stringify({\r",
+									"    \"type\" : \"remote\",\r",
+									"    \"status\" : \"available\",\r",
+									"    \"startTime\" : startTime,\r",
+									"    \"endTime\" : endTime\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth.response.body.access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\" : \"remote\",\n  \"status\" : \"available\",\n  \"startTime\" : \"{{$localDatetime iso8601}}\",\n  \"endTime\" : \"{{$localDatetime iso8601}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/doctors/appointments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMyAppointmentsPatient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var accessToken = pm.collectionVariables.get(\"authDoctorsToken\");\r",
+									"\r",
+									"pm.request.headers.add({\r",
+									"    key: \"Authorization\",\r",
+									"    value: `Bearer ${accessToken}`\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/doctors/appointments/patient/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors",
+								"appointments",
+								"patient",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAppointment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var accessToken = pm.collectionVariables.get(\"authDoctorsToken\");\r",
+									"\r",
+									"pm.request.headers.add({\r",
+									"    key: \"Authorization\",\r",
+									"    value: `Bearer ${accessToken}`\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\" : \"accepted\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/doctors/appointments/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"doctors",
+								"appointments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAppointment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var accessToken = pm.collectionVariables.get(\"authDoctorsToken\");\r",
+									"\r",
+									"pm.request.headers.add({\r",
+									"    key: \"Authorization\",\r",
+									"    value: `Bearer ${accessToken}`\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/appointments/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Consultas",
+			"item": [
+				{
+					"name": "as Patient",
+					"item": [
+						{
+							"name": "/appointments",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"doctorCRM\": \"doctor 1\",\n    \"appointmentStart\": \"2015-03-25T12:00:00.000Z\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/appointments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/appointments",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change CPF",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cpf\": \"new cpf\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/cpf",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										"cpf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete CPF",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cpf\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/cpf",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										"cpf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/cancellation",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cancellation\": true,\n    \"cancellationJustification\": \"Justification\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/:id/cancellation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										":id",
+										"cancellation"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "66a395c1cf4d150c031592c9"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{authPatientsToken}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "as Doctor",
+					"item": [
+						{
+							"name": "/appointments",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"approvalStatus\": \"approved\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/:id/approval-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										":id",
+										"approval-status"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "66a395c1cf4d150c031592c9"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/appointments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/appointments",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change CRM",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"crm\": \"new crm\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/crm",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										"crm"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete CRM",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"crm\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointments/crm",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointments",
+										"crm"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{authDoctorsToken}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://k8s-default-ingressb-e8dce83f4f-952000703.us-east-1.elb.amazonaws.com",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://k8s-default-ingressb-e8dce83f4f-952000703.us-east-1.elb.amazonaws.com",
+			"type": "string"
+		},
+		{
+			"key": "authDoctorsToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "authPatientsToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "randomEmail",
+			"value": ""
+		},
+		{
+			"key": "randomCrm",
+			"value": ""
+		},
+		{
+			"key": "randomName",
+			"value": ""
+		},
+		{
+			"key": "randomPhone",
+			"value": ""
+		},
+		{
+			"key": "randomStreet",
+			"value": ""
+		},
+		{
+			"key": "randomCity",
+			"value": ""
+		},
+		{
+			"key": "randomState",
+			"value": ""
+		},
+		{
+			"key": "randomZip",
+			"value": ""
+		},
+		{
+			"key": "startTime",
+			"value": ""
+		},
+		{
+			"key": "endTime",
+			"value": ""
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "doctorId",
+			"value": ""
+		},
+		{
+			"key": "randomPatientEmail",
+			"value": ""
+		},
+		{
+			"key": "randomPatientCpf",
+			"value": ""
+		},
+		{
+			"key": "randomPatientName",
+			"value": ""
+		},
+		{
+			"key": "randomPatientPhone",
+			"value": ""
+		},
+		{
+			"key": "randomPatientStreet",
+			"value": ""
+		},
+		{
+			"key": "randomPatientCity",
+			"value": ""
+		},
+		{
+			"key": "randomPatientState",
+			"value": ""
+		},
+		{
+			"key": "randomPatientZip",
+			"value": ""
+		}
+	]
+}
